@@ -1,0 +1,62 @@
+S2 configuration:
+
+
+Switch1>enable
+Switch1#configure terminal
+Switch1(config)#hostname S2
+S2(config)#vlan 10
+S2(config-vlan)#name Management
+S2(config-vlan)#ex
+S2(config)#vlan 20
+S2(config-vlan)#name IT
+S2(config-vlan)#ex
+S2(config)#vlan 30
+S2(config-vlan)#name HR
+S2(config-vlan)#ex
+S2(config)#vlan 40
+S2(config-vlan)#name Guest
+S2(config-vlan)#ex
+S2(config)#vlan 999
+S2(config-vlan)#name Unused_Ports
+S2(config-vlan)#ex
+S2(config)#interface g0/1
+S2(config-if)#switchport mode trunk
+S2(config-if)#ex
+S2(config)#interface range f0/1-7
+S2(config-if-range)#switchport mode access
+S2(config-if-range)#switchport port-security
+S2(config-if-range)#switchport port-security maximum 1
+S2(config-if-range)#switchport port-security violation shutdown
+S2(config-if-range)#switchport port-security mac-address sticky
+S2(config-if-range)#ex
+S2(config)#int range f0/1-3
+S2(config-if-range)#switchport access vlan 10
+S2(config-if-range)#ex
+S2(config)#int range f0/4-7
+S2(config-if-range)#switchport access vlan 30
+S2(config-if-range)#ex
+S2(config)#interface range f0/8-24
+S2(config-if-range)#switchport access vlan 999
+S2(config-if-range)#shutdown
+S2(config-if-range)#ex
+
+S2(config)#enable secret 123
+S2(config)#line con 0
+S2(config-line)#password cisco
+S2(config-line)#login
+S2(config-line)#exit
+
+S2(config)#ip domain-name project.com
+S2(config)#username admin privilege 15 secret cisco123
+S2(config)#crypto key generate rsa
+The name for the keys will be: S2.project.com
+Choose the size of the key modulus in the range of 360 to 4096 for your
+  General Purpose Keys. Choosing a key modulus greater than 512 may take
+  a few minutes.
+
+How many bits in the modulus [512]: 1024
+% Generating 1024 bit RSA keys, keys will be non-exportable...[OK]
+
+S2(config)#line vty 0 15
+S2(config-line)#login local
+S2(config-line)#exit

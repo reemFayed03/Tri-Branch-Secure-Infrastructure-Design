@@ -1,0 +1,66 @@
+R2 configuration:
+
+
+Router1>enable
+Router1#configure terminal
+Router1(config)#hostname R2
+R2(config)#interface g0/1
+R2(config-if)#no shutdown
+R2(config)#interface  se0/0/0
+R2(config-if)#no shutdown
+R2(config-if)#ex
+R2(config)#interface  se0/0/1
+R2(config-if)#no shutdown
+R2(config)#interface g0/1.10
+R2(config-subif)# encapsulation dot1Q 10
+R2(config-subif)# ip address 172.16.0.1 255.255.255.224
+R2(config-subif)#ex
+R2(config)#interface g0/1.30
+R2(config-subif)#encapsulation dot1Q 30
+R2(config-subif)#ip address 172.16.0.97 255.255.255.240
+R2(config-subif)#ex
+
+R2(config)#interface Serial0/0/0
+R2(config-if)#ip address 172.16.0.122 255.255.255.252
+R2(config-if)#ex
+R2(config)#interface Serial0/0/1
+R2(config-if)#ip address 172.16.0.125 255.255.255.252
+R2(config-if)#ex
+R2(config)#router ospf 1
+R2(config-router)#network 172.16.0.120 0.0.0.3 area 0
+R2(config-router)#network 172.16.0.124 0.0.0.3 area 0
+R2(config-router)#network 172.16.0.0 0.0.0.31 area 0
+R2(config-router)#network 172.16.0.96 0.0.0.15 area 0
+R2(config-router)#ex
+
+
+R2(config)#interface g0/1.10
+R2(config-subif)#ip helper-address 172.16.0.66
+R2(config-subif)#ex
+R2(config)#interface g0/1.30
+R2(config-subif)#ip helper-address 172.16.0.66
+R2(config-subif)#ex
+
+R2(config)#enable secret 123
+R2(config)#line con 0
+R2(config-line)#password cisco
+R2(config-line)#login
+R2(config-line)#exit
+
+R2(config)#ip domain-name  project.com
+R2(config)#username admin privilege 15 secret cisco123
+R2(config)#crypto key generate rsa
+The name for the keys will be: R2.project.com
+Choose the size of the key modulus in the range of 360 to 4096 for your
+  General Purpose Keys. Choosing a key modulus greater than 512 may take
+  a few minutes.
+
+How many bits in the modulus [512]: 1024
+% Generating 1024 bit RSA keys, keys will be non-exportable...[OK]
+
+R2(config)#line vty 0 4
+*Mar 1 15:48:51.948: %SSH-5-ENABLED: SSH 1.99 has been enabled
+R2(config-line)#transport input ssh 
+R2(config-line)#login local
+R2(config-line)#exit
+

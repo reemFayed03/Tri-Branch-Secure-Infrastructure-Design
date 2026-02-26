@@ -1,0 +1,78 @@
+R3 configuration:
+
+
+Router2>enable
+Router2#configure terminal
+Router2(config)#hostname R3
+R3(config)#interface g0/0
+R3(config-if)#no shutdown
+R3(config-if)#ex
+R3(config)#interface se0/0/0
+R3(config-if)#no shutdown
+R3(config-if)#ex
+R3(config)#interface se0/0/1
+R3(config-if)#clock rate 64000
+R3(config-if)#no shutdown
+R3(config-if)#ex
+R3(config)#interface g0/0.10
+R3(config-subif)# encapsulation dot1Q 10
+R3(config-subif)# ip address 172.16.0.33 255.255.255.224
+R3(config-subif)#ex
+R3(config)#interface g0/0.40
+R3(config-subif)#encapsulation dot1Q 40
+R3(config-subif)#ip address 172.16.0.113 255.255.255.248
+R3(config-subif)#ex
+
+R3(config)#interface Serial0/0/0
+R3(config-if)#ip address 172.16.0.130 255.255.255.252
+R3(config-if)#ex
+R3(config)#interface Serial0/0/1
+R3(config-if)#ip address 172.16.0.126 255.255.255.252
+R3(config-if)#ex
+R3(config)#router ospf 1
+R3(config-router)#network 172.16.0.124 0.0.0.3 area 0
+R3(config-router)#network 172.16.0.128 0.0.0.3 area 0
+R3(config-router)#network 172.16.0.32 0.0.0.31 area 0
+R3(config-router)#network 172.16.0.112 0.0.0.7 area 0
+R3(config-router)#ex
+
+
+R3(config)#interface g0/0.10
+R3(config-subif)#ip helper-address 172.16.0.66
+R3(config-subif)#ex
+R3(config)#interface g0/0.40
+R3(config-subif)#ip helper-address 172.16.0.66
+R3(config-subif)#ex
+
+
+R3(config)#enable secret 123
+R3(config)#line con 0
+R3(config-line)#password cisco
+R3(config-line)#login
+R3(config-line)#exit
+
+R3(config)#ip domain-name project.com
+R3(config)#username admin privilege 15 secret cisco123
+R3(config)#crypto key generate rsa
+The name for the keys will be: R3.project.com
+Choose the size of the key modulus in the range of 360 to 4096 for your
+  General Purpose Keys. Choosing a key modulus greater than 512 may take
+  a few minutes.
+
+How many bits in the modulus [512]: 1024
+% Generating 1024 bit RSA keys, keys will be non-exportable...[OK]
+
+R3(config)#line vty 0 4
+*Mar 1 15:55:34.790: %SSH-5-ENABLED: SSH 1.99 has been enabled
+R3(config-line)#transport input ssh
+R3(config-line)#login local
+R3(config-line)#exit
+
+R3(config)#ip access-list extended BLOCK_GUEST
+R3(config-ext-nacl)#deny ip 172.16.0.112 0.0.0.7 172.16.0.96 0.0.0.15
+R3(config-ext-nacl)#deny ip 172.16.0.112 0.0.0.7 172.16.0.0 0.0.0.31
+R3(config-ext-nacl)#deny ip 172.16.0.112 0.0.0.7 172.16.0.32 0.0.0.31
+R3(config-ext-nacl)#deny ip 172.16.0.112 0.0.0.7 172.16.0.64 0.0.0.31
+R3(config-ext-nacl)#permit ip any any
+R3(config-ext-nacl)#exit
+
