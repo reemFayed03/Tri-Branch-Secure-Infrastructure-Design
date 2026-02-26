@@ -15,7 +15,7 @@ This project demonstrates the design and deployment of a scalable enterprise net
     * Applied **Extended Access Control Lists (ACLs)** to restrict Guest access to sensitive internal networks.
 
 ## Addressing Plan (VLSM)
-|    Department     | Required Hosts |  Subnet ID  | CIDR | Default Gateway |
+|    Department     | Required Hosts |  Subnet Mask  | prefix | Default Gateway |
 | :-----------------| :------------- | :---------- | :--- | :-------------- |
 |   **Management**  |       30       | 172.16.0.0  | /27  | 172.16.0.1      |
 |  **IT & Servers** |       30       | 172.16.0.64 | /27  | 172.16.0.65     |
